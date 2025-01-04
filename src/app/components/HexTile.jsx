@@ -6,9 +6,9 @@ const HexTile = ({ position, type, size = 0.99 }) => {
   
   // Colors for different tile types
   const colors = {
-    land: '#90be6d',
-    water: '#48cae4',
-    selected: '#f4a261'
+    land: '#B6C7AA',
+    water: '#6A9AB0',
+    selected: '#'
   };
   
   return (
@@ -20,8 +20,8 @@ const HexTile = ({ position, type, size = 0.99 }) => {
       <cylinderGeometry args={[size, size, 1, 6]} />
       <meshStandardMaterial
         color={colors[type]}
-        metalness={type === 'water' ? 0.8 : 0.1}
-        roughness={type === 'water' ? 0.2 : 0.8}
+        metalness={type === 'water' ? 0.5 : 0.1}
+        roughness={type === 'water' ? 0.5 : 0.9}
       />
     </mesh>
   );

@@ -10,13 +10,13 @@ const page = () => {
   return (
     <div className="w-full h-screen relative">
       <Canvas
-        camera={{ position: [20, 20, 20], fov: 50 }}
+        camera={{ position: [200, 80, 300], fov: 6 }}
         shadows
       >
-        <ambientLight intensity={0.5} />
+        <ambientLight intensity={0.8} />
         <directionalLight
           position={[10, 10, 10]}
-          intensity={1}
+          intensity={2}
           castShadow
         />
         
