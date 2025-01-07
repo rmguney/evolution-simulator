@@ -1,26 +1,26 @@
 import { useState } from 'react';
 import { Play, Pause, RotateCcw, Settings, BarChart } from 'lucide-react';
 import SpeedControls from './controls/SpeedControls';
+import SettingsPanel from './controls/SettingsPanel';
 import useSimulationStore from '../store/simulationStore';
 
 const ControlPanel = () => {
-  const { running, setRunning, resetSimulation } = useSimulationStore();
+  const { isRunning, setRunning, reset, showStats, toggleStats } = useSimulationStore();
   const [showSettings, setShowSettings] = useState(false);
-  const [showStats, setShowStats] = useState(false);
   
   return (
     <div className="fixed top-4 left-1/2 -translate-x-1/2 bg-white/90 rounded-lg shadow-lg p-4">
       <div className="flex items-center gap-4">
         <button
-          onClick={() => setRunning(!running)}
+          onClick={() => setRunning(!isRunning)}
           className="p-2 rounded hover:bg-gray-100"
-          aria-label={running ? 'Pause' : 'Play'}
+          aria-label={isRunning ? 'Pause' : 'Play'}
         >
-          {running ? <Pause size={24} /> : <Play size={24} />}
+          {isRunning ? <Pause size={24} /> : <Play size={24} />}
         </button>
         
         <button
-          onClick={resetSimulation}
+          onClick={reset}
           className="p-2 rounded hover:bg-gray-100"
           aria-label="Reset"
         >
@@ -38,13 +38,15 @@ const ControlPanel = () => {
         </button>
         
         <button
-          onClick={() => setShowStats(!showStats)}
-          className="p-2 rounded hover:bg-gray-100"
+          onClick={toggleStats}
+          className={`p-2 rounded hover:bg-gray-100 ${showStats ? 'bg-blue-100' : ''}`}
           aria-label="Statistics"
         >
           <BarChart size={24} />
         </button>
       </div>
+      
+      {showSettings && <SettingsPanel onClose={() => setShowSettings(false)} />}
     </div>
   );
 };

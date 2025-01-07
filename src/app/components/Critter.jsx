@@ -1,25 +1,21 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { useGLTF, Html } from '@react-three/drei';
-import { calculateMovementSpeed, calculateEnergyConsumption } from '../utils/geneticUtils';
+import { Html } from '@react-three/drei';
 
-const Critter = ({ position, genes, stats, onMove, onDeath }) => {
+const Critter = ({ position, genes, stats }) => {
   const meshRef = useRef();
-  const { scene } = useGLTF('/assets/critter.glb', true);
-  const model = scene ? scene.clone() : null;
-  
   const [showStats, setShowStats] = useState(false);
   
   useFrame((state, delta) => {
-    // Update position and handle movement
-    if (onMove) {
-      const speed = calculateMovementSpeed(genes.movementSpeed, genes.size);
-      // Movement logic here
+    if (meshRef.current) {
+      const scale = 0.2 + (genes.size / 200); // Reduced base size and scale factor
+      meshRef.current.scale.set(scale, scale, scale);
+      
+      // Random movement
+      const speed = genes.movementSpeed * delta * 0.1;
+      meshRef.current.position.x += (Math.random() - 0.5) * speed;
+      meshRef.current.position.z += (Math.random() - 0.5) * speed;
     }
-    
-    // Update scale based on size gene
-    const scale = 0.5 + (genes.size / 100);
-    meshRef.current.scale.set(scale, scale, scale);
   });
   
   // Status bars component
@@ -34,25 +30,19 @@ const Critter = ({ position, genes, stats, onMove, onDeath }) => {
     </Html>
   );
   
+  // Adjust position to be above the hex cell
+  const elevatedPosition = [position[0], position[1] + 0.75, position[2]];
+  
   return (
-    <group position={position}>
-      {model ? (
-        <primitive
-          ref={meshRef}
-          object={model}
-          onPointerEnter={() => setShowStats(true)}
-          onPointerLeave={() => setShowStats(false)}
-        />
-      ) : (
-        <mesh
-          ref={meshRef}
-          onPointerEnter={() => setShowStats(true)}
-          onPointerLeave={() => setShowStats(false)}
-        >
-          <sphereGeometry args={[0.5, 32, 32]} />
-          <meshStandardMaterial color="#e76f51" />
-        </mesh>
-      )}
+    <group position={elevatedPosition}>
+      <mesh
+        ref={meshRef}
+        onPointerEnter={() => setShowStats(true)}
+        onPointerLeave={() => setShowStats(false)}
+      >
+        <sphereGeometry args={[0.5, 32, 32]} />
+        <meshStandardMaterial color="#e76f51" />
+      </mesh>
       {showStats && <StatusBars />}
     </group>
   );
